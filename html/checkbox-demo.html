@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">    
+    <title>checkbox-demo</title>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="./static/images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- c-wrap -->    
+    <div class="c-wrap">
+      <form name="pageForm" action="" method="get">
+      启用服务<br /><br />
+      <label><input name="fun_0" type="checkbox" value="" />RT-SMS</label>
+      <label><input name="fun_1" type="checkbox" value="" />RX-SMS</label>
+      <label><input name="fun_2" type="checkbox" value="" />RT-TXT</label>
+      <label><input name="fun_3" type="checkbox" value="" />RX-RMS</label>
+      <label><input name="fun_4" type="checkbox" value="" />RT-RCS</label>
+      <label><input name="fun_5" type="checkbox" value="" />RX-RCS</label>
+
+      <br />
+      <h4>新增-获取页面上的选择状态(整数值)</h4>
+      <input type="button" value="提交" onclick="getFuns();" />
+
+      <br />
+      <br />
+      <h4>编辑-根据后端的值把状态回填上去</h4>
+      <input type="text" id="edit_funs" name="edit_funs" />输入数字2的倍数</label>
+
+      <input type="button" value="提交" onclick="refFuns();"/>
+
+      <br />
+      <br />
+      <h4>列表页面-根据现实返回的二进制字符串-返回能力字符串</h4>
+      <input type="text" name="funs" />提交</label>
+      <input type="button" value="提交" />
+
+      </form>
+
+    </div>
+    <!-- /c-wrap -->
+    <!-- c-loading -->
+    <div id="loading" class="c-loading c-index-loading">
+        <div class="loading-content"><img src="./static/images/loading.gif" /></div>
+    </div>
+    <!-- /c-pop-modal -->
+    <script src="./static/plugins/jquery/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+            function getFuns(){
+                 var length = $("form input[name^='fun_']").size();
+                 if(length<0) return 0;
+                 var funs = new Array(length);
+                 $("form input[name^='fun_']").each(function(){
+                    var name = this.name;
+                    var id  = name.split("_")[1];
+                    if(this.checked){
+                        funs[length-id] = 1;    
+                    }else{
+                        funs[length-id] = 0;    
+                    }
+                 });
+
+                 console&&console.log(funs);
+                 var sum =  parseInt(funs.join(""),2);
+                 console&&console.log(sum);
+            }
+
+            function refFuns() {
+                $("form input[name^='fun_']").attr('checked',false);
+                var sum = $.trim($("#edit_funs").val());
+                if(sum == "") return;
+                console&&console.log("输入的正整数" + sum);
+                var funs = parseInt(sum).toString(2);
+                console&&console.log("转成二进制字符串" + funs);
+                var length = $("form input[name^='fun_']").size();
+                if(funs.length > length){
+                    funs = funs.substring(funs.length - length);
+                }else if (funs.length < length) {
+                    var seat = Array(length - funs.length).fill(0)
+                    funs = seat.join("") + funs;
+                }
+                console&&console.log("根据页面的checkbox个数（截取或者补位）得到二进制字符串:" + funs);
+
+                var funs_array = funs.split("").reverse();
+                $("form input[name^='fun_']").each(function(){
+                   var name = this.name;
+                   var id  = name.split("_")[1];
+                   if(funs_array[id] == "1"){
+                       console&&console.log("form input[name='fun_"+id+"']");
+                       $("form input[name='fun_"+id+"']").prop('checked','checked');    
+                   }
+                });
+                return false;
+            }   
+    </script>
+</body>
+</html>
